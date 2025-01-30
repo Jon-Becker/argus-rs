@@ -17,14 +17,15 @@ lto = "thin"
 debug = true
 
 [workspace.package]
-version = "0.8.5"
+version = "0.1.0"
 edition = "2021"
 license = "MIT"
 rust-version = "1.81"
-homepage = "https://jbecker.dev"
+homepage = "https://github.com/Jon-Becker/argus-rs"
 repository = "https://github.com/Jon-Becker/argus-rs"
 keywords = ["ethereum", "web3", "evm", "crypto"]
 exclude = [".github/"]
+readme = "README.md"
 
 [workspace.lints]
 rust.missing_debug_implementations = "warn"
