@@ -1,0 +1,31 @@
+[package]
+name = "argus-core"
+description = "Argus is a minimal, blazing fast contract storage introspection tool written in rust."
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+homepage.workspace = true
+repository.workspace = true
+keywords.workspace = true
+exclude.workspace = true
+
+[lib]
+bench = false
+
+[lints]
+workspace = true
+
+[dependencies]
+alloy = { workspace = true }
+reqwest = { workspace = true }
+eyre = { workspace = true }
+tokio = { workspace = true }
+alloy-sol-types = { workspace = true }
+alloy-contract = { workspace = true }
+hex = { workspace = true }
+futures = { workspace = true }
+
+[dev-dependencies]
+criterion = { version = "0.5.1", features = ["async_futures", "async_tokio"] }
+memory-stats = "1.0.0"
