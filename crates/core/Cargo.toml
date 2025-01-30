@@ -1,5 +1,5 @@
 [package]
-name = "argus-core"
+name = "argus"
 description = "Argus is a minimal, blazing fast contract storage introspection tool written in rust."
 version.workspace = true
 edition.workspace = true
