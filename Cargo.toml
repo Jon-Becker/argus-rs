@@ -93,7 +93,7 @@ unnecessary_struct_initialization = "allow"
 use_self = "allow"
 
 [workspace.dependencies]
-argus-eth = { path = "crates/core" }
+argus-rs = { path = "crates/core" }
 
 # deps
 alloy = { version = "0.9.2", features = [
