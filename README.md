@@ -13,7 +13,7 @@ Argus is a minimal, blazing fast contract storage introspection tool written in 
 ## Installation & Usage
 
 ```bash
-cargo install argus-rs
+cargo add argus-rs
 ```
 
 ## Documentation
