@@ -1,6 +1,7 @@
 //! Argus is a minimal, blazing fast contract storage introspection tool written in rust.
 //!
-//! It is designed to extract storage mapping slots from a contract, without needing to know the contract's source code.
+//! It is designed to extract storage mapping slots from a contract, without needing to know the
+//! contract's source code.
 
 use alloy::{
     network::TransactionBuilder,
@@ -8,16 +9,17 @@ use alloy::{
     providers::{ext::TraceApi, ProviderBuilder},
     rpc::types::{trace::parity::TraceType, TransactionRequest},
 };
-use eyre::Result;
-use eyre::{bail, OptionExt};
+use eyre::{bail, OptionExt, Result};
 use std::{collections::VecDeque, fmt::Debug};
 
-/// The `Introspector` struct is used to interrogate a contract and determine which standards it adheres to.
+/// The `Introspector` struct is used to introspect a contract's storage and determine which
+/// standards it adheres to.
 #[derive(Debug, Clone)]
 pub struct Introspector {
-    /// The contract address to interrogate.
+    /// The contract address to introspect.
     pub contract_address: Address,
-    /// The provider to use for querying the contract. Supports WebSocket, IPC, and HTTP transports.
+    /// The provider to use for querying the contract. Supports WebSocket, IPC, and HTTP
+    /// transports.
     rpc_url: String,
 }
 
@@ -76,9 +78,9 @@ impl Introspector {
         .await;
 
         let maybe_erc_20 = balance_slot_result.is_ok() && allowance_slot_result.is_ok();
-        let maybe_erc_721 = balance_slot_result.is_ok()
-            && token_approvals_slot_result.is_ok()
-            && operator_approvals_slot_result.is_ok();
+        let maybe_erc_721 = balance_slot_result.is_ok() &&
+            token_approvals_slot_result.is_ok() &&
+            operator_approvals_slot_result.is_ok();
         let maybe_erc_1155 =
             operator_approvals_slot_result.is_ok() && erc_1155_balance_slot_result.is_ok();
 
@@ -133,14 +135,16 @@ impl Introspector {
         return self.extract_slot(calldata).await;
     }
 
-    /// Get the operator approvals slot of the contract by tracing a call to `isApprovedForAll(address, address)`.
+    /// Get the operator approvals slot of the contract by tracing a call to
+    /// `isApprovedForAll(address, address)`.
     pub async fn get_operator_approvals_slot(&self) -> Result<U256> {
         let calldata =
             bytes!("e985e9c5000000000000000000000000000000000000000000696c6f76656f7474657273000000000000000000000000000000000000000000696c6f76656f7474657273"); // isApprovedForAll(INTROSPECT_ADDRESS, INTROSPECT_ADDRESS)
         return self.extract_slot(calldata).await;
     }
 
-    /// Get the erc1155 balance slot of the contract by tracing a call to `balanceOf(address, uint256)`.
+    /// Get the erc1155 balance slot of the contract by tracing a call to `balanceOf(address,
+    /// uint256)`.
     pub async fn get_erc_1155_balance_slot(&self) -> Result<U256> {
         let calldata =
             bytes!("00fdd58e000000000000000000000000000000000000000000696c6f76656f7474657273000000000000000000000000000000000000000000696c6f76656f7474657273"); // balanceOf(INTROSPECT_ADDRESS, INTROSPECT_ADDRESS)
@@ -158,7 +162,8 @@ impl Introspector {
     /// For example, the mapping slot for `balanceOf(0x000...123)` is stored as:
     /// `keccak256(0x00000000000000000000000000000000000000000000000000000000000001230000000000000000000000000000000000000000000000000000000000000001)`
     ///
-    /// In this case, the mapping key (address) is `0x000...123` and the slot is `1`, so we return `1`.
+    /// In this case, the mapping key (address) is `0x000...123` and the slot is `1`, so we return
+    /// `1`.
     async fn extract_slot(&self, calldata: Bytes) -> Result<U256> {
         let provider = ProviderBuilder::new().on_builtin(&self.rpc_url).await?;
 
@@ -175,14 +180,15 @@ impl Introspector {
             .ok_or_eyre("vm trace not found")?
             .ops;
 
-        // A naive stack impl. We don't track this accurately, but it's good enough for our purposes.
+        // A naive stack impl. We don't track this accurately, but it's good enough for our
+        // purposes.
         let mut stack: VecDeque<U256> = VecDeque::new();
         let mut memory: Vec<u8> = Vec::new();
 
         for instruction in result {
             if let Some(executed) = &instruction.ex {
                 if let Some(memory_delta) = &executed.mem {
-                    let offset = memory_delta.off as usize;
+                    let offset = memory_delta.off;
                     let data = memory_delta.data.to_vec();
 
                     // expand memory if necessary
